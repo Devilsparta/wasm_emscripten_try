@@ -8,7 +8,7 @@
 EM_BOOL one_iter(double time, void *userData)
 {
     // Can render to the screen here, etc.
-    puts("one iteration");
+    // puts("one iteration");
     // Return true to keep the loop running.
     return EM_TRUE;
 }
@@ -18,6 +18,9 @@ int main()
 #ifdef __EMSCRIPTEN__
     // Receives a function to call and some user data to provide it.
     emscripten_request_animation_frame_loop(one_iter, 0);
+    EM_ASM(
+        alert('hello world!');
+        throw 'all done';);
 #else
     while (1)
     {
