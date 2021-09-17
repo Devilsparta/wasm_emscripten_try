@@ -24,7 +24,7 @@ add_executable(
 # 引入 EmScripten 库
 target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE /home/zhang-hao/lib/emsdk/emsdk/system/include
+    PRIVATE /home/zhang-hao/lib/emsdk/upstream/emscripten/system/include
 )
 
 # 设置 链接器选项 把 C++ 和 Javascript 绑定起来 https://emscripten.org/docs/tools_reference/emcc.html?highlight=bind
@@ -33,18 +33,28 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS --bind)
 # CMAKE中定义宏
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-D __EMSCRIPTEN__")
 
-
-project(hello_function)
-
+# 重新设置一个Target
+set(HELLO_FUNCTION_TARGET hello_function)
 
 # 注册可执行文件 ${PROJECT_NAME} Target
 add_executable(
-    ${PROJECT_NAME}
+    ${HELLO_FUNCTION_TARGET}
     ${SRC_DIR}/cpp/hello_function.cpp
 )
 
 # 引入 EmScripten 库
 target_include_directories(
-    ${PROJECT_NAME}
-    PRIVATE /home/zhang-hao/lib/emsdk/emsdk/system/include
+    ${HELLO_FUNCTION_TARGET}
+    PRIVATE /home/zhang-hao/lib/emsdk/upstream/emscripten/system/include
 )
+
+target_link_options(
+    ${HELLO_FUNCTION_TARGET} 
+    PRIVATE -sEXPORTED_FUNCTIONS=[_int_sqrt]
+)
+
+target_link_options(
+    ${HELLO_FUNCTION_TARGET} 
+    PRIVATE -sEXPORTED_RUNTIME_METHODS=[ccall,cwrap]
+)
+
